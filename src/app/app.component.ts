@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { WebsocketService } from './websocket.service';
 
 @Component({
   selector: 'app-root',
@@ -6,6 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  constructor(private websocket: WebsocketService) {}
+
+  message: string = '';
+  messages: string[] = [];
+
   playerSymbol = 'X';
   moveCounter = 0;
 
@@ -30,6 +36,9 @@ export class AppComponent implements OnInit {
   boards = [this.board1, this.board2, this.board3];
 
   ngOnInit(): void {
+    this.websocket.onMessage().subscribe((message: any) => {
+      this.messages.push(message);
+    });
   }
 
   onClick(board: number, row: number, col: number) {
@@ -124,5 +133,10 @@ export class AppComponent implements OnInit {
     this.playerSymbol == 'X'
       ? (this.playerSymbol = 'O')
       : (this.playerSymbol = 'X');
+  }
+
+  sendMessage() {
+    this.websocket.sendMessage(this.message);
+    this.message = '';
   }
 }
