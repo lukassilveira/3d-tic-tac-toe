@@ -37,6 +37,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.websocket.onMessage().subscribe((message: any) => {
+      console.log(message);
+      
       this.messages.push(message);
     });
   }
@@ -47,6 +49,16 @@ export class AppComponent implements OnInit {
     if (this.boards[board][row][col] === '') {
       this.boards[board][row][col] = this.playerSymbol;
     }
+    console.log("paskdpsak");
+    
+    this.websocket.sendMove(
+      'Board:' +
+        board.toString() +
+        'Row:' +
+        row.toString() +
+        'Column:' +
+        col.toString()
+    );
     this.isBoardFull();
     if (this.checkWinner(this.playerSymbol)) {
       alert('Player ' + this.playerSymbol + ' wins!');

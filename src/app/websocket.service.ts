@@ -11,6 +11,14 @@ export class WebsocketService {
     this.socket.emit('chatMessage', message);
   }
 
+  sendMove(move: string) {
+    this.socket.emit('moveMessage', move);
+  }
+
+  receiveMessage() {
+    return this.socket.fromEvent('receiveMessage');
+  }
+
   onMessage() {
     return this.socket.fromEvent('chatMessage');
   }
