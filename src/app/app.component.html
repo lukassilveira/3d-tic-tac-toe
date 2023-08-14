@@ -1,4 +1,7 @@
-<div class="board-container">
+<div class="starting-screen" *ngIf="!gameStarted">
+  <span>Waiting for second player...</span>
+</div>
+<div class="board-container" *ngIf="gameStarted">
   <div class="board">
     <table>
       <tr>
@@ -167,11 +170,13 @@
     </table>
   </div>
 </div>
-<div class="game-status">
-  <span class="game-status-text">Game Status</span>
-</div>
-<div>
-  <div *ngFor="let msg of messages">{{ msg }}</div>
-  <input [(ngModel)]="message" placeholder="Digite sua mensagem" />
-  <button (click)="sendMessage()">Enviar</button>
+<div *ngIf="gameStarted">
+  <div class="game-status">
+    <span class="game-status-text">Game Status</span>
+  </div>
+  <div>
+    <div *ngFor="let msg of messages">{{ msg }}</div>
+    <input [(ngModel)]="message" placeholder="Digite sua mensagem" />
+    <button (click)="sendMessage()">Enviar</button>
+  </div>
 </div>

@@ -9,6 +9,8 @@ import { WebsocketService } from './websocket.service';
 export class AppComponent implements OnInit {
   constructor(private websocket: WebsocketService) {}
 
+  gameStarted = false;
+
   message: string = '';
   messages: string[] = [];
 
@@ -35,12 +37,11 @@ export class AppComponent implements OnInit {
 
   boards = [this.board1, this.board2, this.board3];
 
-  ngOnInit(): void {
-    this.websocket.onMessage().subscribe((message: any) => {
-      console.log(message);
-      
-      this.messages.push(message);
-    });
+  ngOnInit() {
+    this.websocket.waitForPlayers().subscribe(data => {
+      console.log(data);
+      if (data == "Game Started!") this.gameStarted = true;
+    })
   }
 
   onClick(board: number, row: number, col: number) {

@@ -7,6 +7,10 @@ import { Socket } from 'ngx-socket-io';
 export class WebsocketService {
   constructor(private socket: Socket) {}
 
+  waitForPlayers() {
+    return this.socket.fromEvent('gameStarting');
+  }
+
   sendMessage(message: string) {
     this.socket.emit('chatMessage', message);
   }
