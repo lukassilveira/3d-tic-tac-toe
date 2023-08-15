@@ -1,182 +1,196 @@
 <div class="starting-screen" *ngIf="!gameStarted">
   <span>Waiting for second player...</span>
 </div>
-<div class="board-container" *ngIf="gameStarted">
-  <div class="board">
-    <table>
-      <tr>
-        <td class="cell" (click)="onClick(0, 0, 0)">
-          <span>
-            {{ boards[0][0][0] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(0, 0, 1)">
-          <span>
-            {{ boards[0][0][1] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(0, 0, 2)">
-          <span>
-            {{ boards[0][0][2] }}
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td class="cell" (click)="onClick(0, 1, 0)">
-          <span>
-            {{ boards[0][1][0] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(0, 1, 1)">
-          <span>
-            {{ boards[0][1][1] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(0, 1, 2)">
-          <span>
-            {{ boards[0][1][2] }}
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td class="cell" (click)="onClick(0, 2, 0)">
-          <span>
-            {{ boards[0][2][0] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(0, 2, 1)">
-          <span>
-            {{ boards[0][2][1] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(0, 2, 2)">
-          <span>
-            {{ boards[0][2][2] }}
-          </span>
-        </td>
-      </tr>
-    </table>
-  </div>
+<div class="main-container">
+  <div class="board-container" *ngIf="gameStarted">
+    <div class="boards">
+      <div class="board">
+        <table>
+          <tr>
+            <td class="cell" (click)="onClick(0, 0, 0)">
+              <span>
+                {{ boards[0][0][0] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(0, 0, 1)">
+              <span>
+                {{ boards[0][0][1] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(0, 0, 2)">
+              <span>
+                {{ boards[0][0][2] }}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="cell" (click)="onClick(0, 1, 0)">
+              <span>
+                {{ boards[0][1][0] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(0, 1, 1)">
+              <span>
+                {{ boards[0][1][1] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(0, 1, 2)">
+              <span>
+                {{ boards[0][1][2] }}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="cell" (click)="onClick(0, 2, 0)">
+              <span>
+                {{ boards[0][2][0] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(0, 2, 1)">
+              <span>
+                {{ boards[0][2][1] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(0, 2, 2)">
+              <span>
+                {{ boards[0][2][2] }}
+              </span>
+            </td>
+          </tr>
+        </table>
+      </div>
+  
+      <div class="board">
+        <table>
+          <tr>
+            <td class="cell" (click)="onClick(1, 0, 0)">
+              <span>
+                {{ boards[1][0][0] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(1, 0, 1)">
+              <span>
+                {{ boards[1][0][1] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(1, 0, 2)">
+              <span>
+                {{ boards[1][0][2] }}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="cell" (click)="onClick(1, 1, 0)">
+              <span>
+                {{ boards[1][1][0] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(1, 1, 1)">
+              <span>
+                {{ boards[1][1][1] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(1, 1, 2)">
+              <span>
+                {{ boards[1][1][2] }}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="cell" (click)="onClick(1, 2, 0)">
+              <span>
+                {{ boards[1][2][0] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(1, 2, 1)">
+              <span>
+                {{ boards[1][2][1] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(1, 2, 2)">
+              <span>
+                {{ boards[1][2][2] }}
+              </span>
+            </td>
+          </tr>
+        </table>
+      </div>
+  
+      <div class="board">
+        <table>
+          <tr>
+            <td class="cell" (click)="onClick(2, 0, 0)">
+              <span>
+                {{ boards[2][0][0] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(2, 0, 1)">
+              <span>
+                {{ boards[2][0][1] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(2, 0, 2)">
+              <span>
+                {{ boards[2][0][2] }}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="cell" (click)="onClick(2, 1, 0)">
+              <span>
+                {{ boards[2][1][0] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(2, 1, 1)">
+              <span>
+                {{ boards[2][1][1] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(2, 1, 2)">
+              <span>
+                {{ boards[2][1][2] }}
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="cell" (click)="onClick(2, 2, 0)">
+              <span>
+                {{ boards[2][2][0] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(2, 2, 1)">
+              <span>
+                {{ boards[2][2][1] }}
+              </span>
+            </td>
+            <td class="cell" (click)="onClick(2, 2, 2)">
+              <span>
+                {{ boards[2][2][2] }}
+              </span>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="game-status">
+        <span class="game-status-text">Game Status</span>
+      </div>
 
-  <div class="board">
-    <table>
-      <tr>
-        <td class="cell" (click)="onClick(1, 0, 0)">
-          <span>
-            {{ boards[1][0][0] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(1, 0, 1)">
-          <span>
-            {{ boards[1][0][1] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(1, 0, 2)">
-          <span>
-            {{ boards[1][0][2] }}
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td class="cell" (click)="onClick(1, 1, 0)">
-          <span>
-            {{ boards[1][1][0] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(1, 1, 1)">
-          <span>
-            {{ boards[1][1][1] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(1, 1, 2)">
-          <span>
-            {{ boards[1][1][2] }}
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td class="cell" (click)="onClick(1, 2, 0)">
-          <span>
-            {{ boards[1][2][0] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(1, 2, 1)">
-          <span>
-            {{ boards[1][2][1] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(1, 2, 2)">
-          <span>
-            {{ boards[1][2][2] }}
-          </span>
-        </td>
-      </tr>
-    </table>
+    </div>
   </div>
-
-  <div class="board">
-    <table>
-      <tr>
-        <td class="cell" (click)="onClick(2, 0, 0)">
-          <span>
-            {{ boards[2][0][0] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(2, 0, 1)">
-          <span>
-            {{ boards[2][0][1] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(2, 0, 2)">
-          <span>
-            {{ boards[2][0][2] }}
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td class="cell" (click)="onClick(2, 1, 0)">
-          <span>
-            {{ boards[2][1][0] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(2, 1, 1)">
-          <span>
-            {{ boards[2][1][1] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(2, 1, 2)">
-          <span>
-            {{ boards[2][1][2] }}
-          </span>
-        </td>
-      </tr>
-      <tr>
-        <td class="cell" (click)="onClick(2, 2, 0)">
-          <span>
-            {{ boards[2][2][0] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(2, 2, 1)">
-          <span>
-            {{ boards[2][2][1] }}
-          </span>
-        </td>
-        <td class="cell" (click)="onClick(2, 2, 2)">
-          <span>
-            {{ boards[2][2][2] }}
-          </span>
-        </td>
-      </tr>
-    </table>
-  </div>
-</div>
-<div *ngIf="gameStarted">
-  <div class="game-status">
-    <span class="game-status-text">Game Status</span>
-  </div>
-  <div>
-    <div *ngFor="let msg of messages">{{ msg }}</div>
-    <input [(ngModel)]="message" placeholder="Digite sua mensagem" />
-    <button (click)="sendMessage()">Enviar</button>
+  <div *ngIf="gameStarted">
+    <div class="chat-container">
+      <div *ngFor="let msg of messages">{{ msg }}</div>
+      <div class="footer-container">
+        <div>
+          <input [(ngModel)]="message" placeholder="Digite sua mensagem" />
+          <button (click)="sendMessage()">Enviar</button>
+        </div>
+        <div>
+          <button (click)="giveUp()">Desistir</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
