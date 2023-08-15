@@ -10,6 +10,8 @@ export class AppComponent implements OnInit {
   constructor(private websocket: WebsocketService) {}
 
   gameStarted = false;
+  firstMove = true;
+  canPlay = true;
 
   message: string = '';
   messages: string[] = [];
@@ -38,34 +40,37 @@ export class AppComponent implements OnInit {
   boards = [this.board1, this.board2, this.board3];
 
   ngOnInit() {
-    this.websocket.waitForPlayers().subscribe(data => {
-      console.log(data);
-      if (data == "Game Started!") this.gameStarted = true;
-    })
+    this.websocket.waitForPlayers().subscribe((data) => {
+      if (data == 'Game Started!') this.gameStarted = true;
+    });
+    this.websocket.moveListener().subscribe((move: any) => {
+      this.registerMoveOnBoard([move[0], move[1], move[2]]);
+    });
+    this.websocket.turnListener().subscribe((data) => {
+      if (data) this.canPlay = true;
+    });
   }
 
   onClick(board: number, row: number, col: number) {
-    // console.log('Board:', board, 'Row:', row, 'Column:', col);
+    if (this.canPlay == false) return;
 
     if (this.boards[board][row][col] === '') {
-      this.boards[board][row][col] = this.playerSymbol;
+      this.websocket.sendMove([board, row, col]);
+      this.canPlay = !this.canPlay;
     }
-    console.log("paskdpsak");
-    
-    this.websocket.sendMove(
-      'Board:' +
-        board.toString() +
-        'Row:' +
-        row.toString() +
-        'Column:' +
-        col.toString()
-    );
-    this.isBoardFull();
-    if (this.checkWinner(this.playerSymbol)) {
-      alert('Player ' + this.playerSymbol + ' wins!');
-      this.resetBoard();
+  }
+
+  registerMoveOnBoard(move: number[]) {
+    if (this.boards[move[0]][move[1]][move[2]] === '') {
+      this.boards[move[0]][move[1]][move[2]] = this.playerSymbol;
+      this.isBoardFull();
+      if (this.checkWinner(this.playerSymbol)) {
+        alert('Player ' + this.playerSymbol + ' wins!');
+        this.resetBoard();
+      } else {
+        this.changePlayerSymbol();
+      }
     }
-    this.changePlayerSymbol();
   }
 
   checkWinner(symbol: string) {
@@ -137,6 +142,8 @@ export class AppComponent implements OnInit {
         }
       }
     }
+    this.playerSymbol = 'X';
+    this.canPlay = true;
   }
 
   giveUp() {}

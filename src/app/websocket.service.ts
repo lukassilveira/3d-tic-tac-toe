@@ -15,8 +15,16 @@ export class WebsocketService {
     this.socket.emit('chatMessage', message);
   }
 
-  sendMove(move: string) {
+  sendMove(move: number[]) {
     this.socket.emit('moveMessage', move);
+  }
+
+  moveListener() {
+    return this.socket.fromEvent('moveListener');
+  }
+
+  turnListener() {
+    return this.socket.fromEvent('turnListener');
   }
 
   receiveMessage() {
