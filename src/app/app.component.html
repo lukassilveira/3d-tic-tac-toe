@@ -174,7 +174,7 @@
     </div>
     <div>
       <div class="game-status">
-        <span class="game-status-text">Game Status</span>
+        <span class="game-status-text">{{ gameStatus }}</span>
       </div>
     </div>
   </div>
@@ -185,11 +185,11 @@
       </div>
       <div class="footer-container">
         <div class="input-container">
-          <input [(ngModel)]="message" placeholder="Digite sua mensagem" />
-          <button (click)="sendMessage()">Enviar</button>
+          <input [(ngModel)]="message" placeholder="Type your message..." />
+          <button (click)="sendMessage()">Send</button>
         </div>
         <div>
-          <button (click)="giveUp()">Desistir</button>
+          <button (click)="giveUp()">Give Up</button>
         </div>
       </div>
     </div>

@@ -12,6 +12,7 @@ export class AppComponent implements OnInit {
   gameStarted = false;
   firstMove = true;
   canPlay = true;
+  gameStatus = '';
 
   message: string = '';
   messages: string[] = [];
@@ -41,17 +42,31 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.websocket.waitForPlayers().subscribe((data) => {
-      if (data == 'Game Started!') this.gameStarted = true;
+      if (data == 'Game Started!') {
+        this.gameStarted = true;
+        this.gameStatus = 'Both players have connected! Any player can begin!';
+      }
     });
+
     this.websocket.moveListener().subscribe((move: any) => {
       this.registerMoveOnBoard([move[0], move[1], move[2]]);
     });
+
     this.websocket.turnListener().subscribe((data) => {
-      if (data) this.canPlay = true;
+      if (data) {
+        this.canPlay = true;
+        this.gameStatus = 'Your turn!';
+      }
     });
+
+    this.websocket.messageListener().subscribe((data: any) => {
+      this.messages.push(data);
+    });
+
     this.websocket.giveUpListener().subscribe((data) => {
       if (data == 'You gave up!') alert('You gave up!');
       else alert('Your opponent gave up!');
+      this.resetBoard();
     });
   }
 
@@ -60,13 +75,12 @@ export class AppComponent implements OnInit {
 
     if (this.boards[board][row][col] === '') {
       this.websocket.sendMove([board, row, col]);
+      this.gameStatus = 'You have played, wait your turn!';
       this.canPlay = !this.canPlay;
     }
   }
 
   registerMoveOnBoard(move: number[]) {
-    console.log(move);
-
     if (this.boards[move[0]][move[1]][move[2]] === '') {
       this.boards[move[0]][move[1]][move[2]] = this.playerSymbol;
       this.isBoardFull();
@@ -173,6 +187,7 @@ export class AppComponent implements OnInit {
     this.playerSymbol = 'X';
     this.canPlay = true;
     this.moveCounter = 0;
+    this.gameStatus = 'The game restarted! Any player can begin!';
   }
 
   giveUp() {
@@ -186,7 +201,7 @@ export class AppComponent implements OnInit {
   }
 
   sendMessage() {
-    // this.websocket.sendMessage(this.message);
-    this.messages.push(this.message);
+    this.websocket.sendMessage(this.message);
+    this.message = '';
   }
 }

@@ -24,6 +24,11 @@ module.exports = (io) => {
       socket.broadcast.emit("giveUpListener", "Your opponent gave up!");
     });
 
-    socket.on("disconnect", () => console.log("disconnected"));
+    socket.on("sendMessage", (message) => {
+      socket.emit("messageListener", "You: " + message);
+      socket.broadcast.emit("messageListener", "Opponent: " + message);
+    });
+
+    socket.on("disconnect", () => console.log(socket.id + " disconnected"));
   });
 };

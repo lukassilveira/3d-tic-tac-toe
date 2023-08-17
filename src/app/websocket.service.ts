@@ -12,7 +12,7 @@ export class WebsocketService {
   }
 
   sendMessage(message: string) {
-    this.socket.emit('chatMessage', message);
+    this.socket.emit('sendMessage', message);
   }
 
   sendMove(move: number[]) {
@@ -31,8 +31,8 @@ export class WebsocketService {
     return this.socket.fromEvent('turnListener');
   }
 
-  receiveMessage() {
-    return this.socket.fromEvent('receiveMessage');
+  messageListener() {
+    return this.socket.fromEvent('messageListener');
   }
 
   giveUpListener() {
