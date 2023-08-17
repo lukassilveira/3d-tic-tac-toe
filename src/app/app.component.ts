@@ -61,6 +61,8 @@ export class AppComponent implements OnInit {
   }
 
   registerMoveOnBoard(move: number[]) {
+    console.log(move);
+
     if (this.boards[move[0]][move[1]][move[2]] === '') {
       this.boards[move[0]][move[1]][move[2]] = this.playerSymbol;
       this.isBoardFull();
@@ -74,57 +76,79 @@ export class AppComponent implements OnInit {
   }
 
   checkWinner(symbol: string) {
-    let simulatedBoard = [
-      ['', '', ''],
-      ['', '', ''],
-      ['', '', ''],
-    ];
-
-    for (let i = 0; i < this.boards.length; i++) {
-      for (let j = 0; j < this.boards[i].length; j++) {
-        const row = this.boards[i][j];
-        for (let k = 0; k < row.length; k++) {
-          const cell = row[k];
-          if (cell == this.playerSymbol) {
-            simulatedBoard[j][k] = this.playerSymbol;
-          }
+    // check all boards moves made in a single board
+    for (let board = 0; board < this.boards.length; board++) {
+      const b = this.boards[board];
+      for (let i = 0; i < 3; i++) {
+        if (b[i][0] === symbol && b[i][1] === symbol && b[i][2] === symbol) {
+          return true;
         }
       }
+
+      for (let i = 0; i < 3; i++) {
+        if (b[0][i] === symbol && b[1][i] === symbol && b[2][i] === symbol) {
+          return true;
+        }
+      }
+
+      if (b[0][0] === symbol && b[1][1] === symbol && b[2][2] === symbol) {
+        return true;
+      }
+      if (b[0][2] === symbol && b[1][1] === symbol && b[2][0] === symbol) {
+        return true;
+      }
     }
 
-    for (let i = 0; i < 3; i++) {
+    // checking all rows across the 3 boards
+    for (let row = 0; row < 3; row++) {
       if (
-        simulatedBoard[i][0] === symbol &&
-        simulatedBoard[i][1] === symbol &&
-        simulatedBoard[i][2] === symbol
+        (this.boards[0][row][0] == symbol &&
+          this.boards[1][row][1] == symbol &&
+          this.boards[2][row][2] == symbol) ||
+        (this.boards[0][row][2] == symbol &&
+          this.boards[1][row][1] == symbol &&
+          this.boards[2][row][0] == symbol)
       ) {
         return true;
       }
     }
 
-    for (let i = 0; i < 3; i++) {
+    // checking all columns across the 3 boards
+    for (let column = 0; column < 3; column++) {
       if (
-        simulatedBoard[0][i] === symbol &&
-        simulatedBoard[1][i] === symbol &&
-        simulatedBoard[2][i] === symbol
+        (this.boards[0][0][column] == symbol &&
+          this.boards[1][1][column] == symbol &&
+          this.boards[2][2][column] == symbol) ||
+        (this.boards[0][2][column] == symbol &&
+          this.boards[1][1][column] == symbol &&
+          this.boards[2][0][column] == symbol)
       ) {
         return true;
       }
     }
 
+    // checking all diagonals across the 3 boards
     if (
-      simulatedBoard[0][0] === symbol &&
-      simulatedBoard[1][1] === symbol &&
-      simulatedBoard[2][2] === symbol
+      (this.boards[0][0][0] == symbol &&
+        this.boards[1][1][1] == symbol &&
+        this.boards[2][2][2] == symbol) ||
+      (this.boards[0][2][0] == symbol &&
+        this.boards[1][1][1] == symbol &&
+        this.boards[2][0][2] == symbol)
     ) {
       return true;
     }
-    if (
-      simulatedBoard[0][2] === symbol &&
-      simulatedBoard[1][1] === symbol &&
-      simulatedBoard[2][0] === symbol
-    ) {
-      return true;
+    // checking all same square across the 3 boards
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (
+          this.boards[0][i][j] == this.playerSymbol &&
+          this.boards[1][i][j] == this.playerSymbol &&
+          this.boards[2][i][j] == this.playerSymbol
+        ) {
+          return true;
+        }
+      }
     }
     return false;
   }
@@ -144,11 +168,11 @@ export class AppComponent implements OnInit {
     }
     this.playerSymbol = 'X';
     this.canPlay = true;
+    this.moveCounter = 0;
   }
 
   giveUp() {}
 
-  // delete after server implementation
   changePlayerSymbol() {
     this.playerSymbol == 'X'
       ? (this.playerSymbol = 'O')
@@ -159,7 +183,7 @@ export class AppComponent implements OnInit {
     // this.websocket.sendMessage(this.message);
     this.messages.push(this.message);
     console.log(this.messages);
-    
+
     this.message = 'test';
   }
 }
