@@ -15,13 +15,11 @@ module.exports = (io) => {
     }
 
     socket.on("moveMessage", (message) => {
-      console.log(message);
       io.emit("moveListener", message);
       socket.broadcast.emit("turnListener", "playAllowed");
     });
 
     socket.on("giveUp", () => {
-      console.log(socket + ' is giving up!');
       socket.emit("giveUpListener", "You gave up!");
       socket.broadcast.emit("giveUpListener", "Your opponent gave up!");
     });

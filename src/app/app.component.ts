@@ -51,9 +51,9 @@ export class AppComponent implements OnInit {
     });
     this.websocket.giveUpListener().subscribe((data) => {
       console.log(data);
-      
-      if (data == "You gave up!") alert("You gave up!");
-      else alert("Your opponent gave up!");
+
+      if (data == 'You gave up!') alert('You gave up!');
+      else alert('Your opponent gave up!');
     });
   }
 
@@ -178,8 +178,6 @@ export class AppComponent implements OnInit {
   }
 
   giveUp() {
-    console.log('give up button');
-    
     this.websocket.giveUp();
   }
 

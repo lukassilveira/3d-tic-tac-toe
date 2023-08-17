@@ -20,8 +20,6 @@ export class WebsocketService {
   }
 
   giveUp() {
-    console.log('sending giving up');
-    
     this.socket.emit('giveUp');
   }
 
@@ -38,7 +36,7 @@ export class WebsocketService {
   }
 
   giveUpListener() {
-    return this.socket.fromEvent('giveUpListener')
+    return this.socket.fromEvent('giveUpListener');
   }
 
   onMessage() {
