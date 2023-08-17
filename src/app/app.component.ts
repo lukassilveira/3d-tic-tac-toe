@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
   firstMove = true;
   canPlay = true;
 
-  message: string = 'test';
+  message: string = '';
   messages: string[] = [];
 
   playerSymbol = 'X';
@@ -50,8 +50,6 @@ export class AppComponent implements OnInit {
       if (data) this.canPlay = true;
     });
     this.websocket.giveUpListener().subscribe((data) => {
-      console.log(data);
-
       if (data == 'You gave up!') alert('You gave up!');
       else alert('Your opponent gave up!');
     });
@@ -190,8 +188,5 @@ export class AppComponent implements OnInit {
   sendMessage() {
     // this.websocket.sendMessage(this.message);
     this.messages.push(this.message);
-    console.log(this.messages);
-
-    this.message = 'test';
   }
 }

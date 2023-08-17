@@ -180,9 +180,11 @@
   </div>
   <div *ngIf="gameStarted">
     <div class="chat-container">
-      <div *ngFor="let msg of messages">{{ msg }}</div>
+      <div class="messages-container">
+        <div *ngFor="let msg of messages">{{ msg }}</div>
+      </div>
       <div class="footer-container">
-        <div>
+        <div class="input-container">
           <input [(ngModel)]="message" placeholder="Digite sua mensagem" />
           <button (click)="sendMessage()">Enviar</button>
         </div>
