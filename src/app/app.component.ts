@@ -49,6 +49,12 @@ export class AppComponent implements OnInit {
     this.websocket.turnListener().subscribe((data) => {
       if (data) this.canPlay = true;
     });
+    this.websocket.giveUpListener().subscribe((data) => {
+      console.log(data);
+      
+      if (data == "You gave up!") alert("You gave up!");
+      else alert("Your opponent gave up!");
+    });
   }
 
   onClick(board: number, row: number, col: number) {
@@ -171,7 +177,11 @@ export class AppComponent implements OnInit {
     this.moveCounter = 0;
   }
 
-  giveUp() {}
+  giveUp() {
+    console.log('give up button');
+    
+    this.websocket.giveUp();
+  }
 
   changePlayerSymbol() {
     this.playerSymbol == 'X'

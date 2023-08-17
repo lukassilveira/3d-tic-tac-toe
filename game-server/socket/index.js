@@ -20,6 +20,12 @@ module.exports = (io) => {
       socket.broadcast.emit("turnListener", "playAllowed");
     });
 
+    socket.on("giveUp", () => {
+      console.log(socket + ' is giving up!');
+      socket.emit("giveUpListener", "You gave up!");
+      socket.broadcast.emit("giveUpListener", "Your opponent gave up!");
+    });
+
     socket.on("disconnect", () => console.log("disconnected"));
   });
 };

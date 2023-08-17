@@ -19,6 +19,12 @@ export class WebsocketService {
     this.socket.emit('moveMessage', move);
   }
 
+  giveUp() {
+    console.log('sending giving up');
+    
+    this.socket.emit('giveUp');
+  }
+
   moveListener() {
     return this.socket.fromEvent('moveListener');
   }
@@ -29,6 +35,10 @@ export class WebsocketService {
 
   receiveMessage() {
     return this.socket.fromEvent('receiveMessage');
+  }
+
+  giveUpListener() {
+    return this.socket.fromEvent('giveUpListener')
   }
 
   onMessage() {
