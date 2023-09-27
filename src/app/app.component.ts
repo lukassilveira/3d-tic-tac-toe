@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WebsocketService } from './websocket.service';
+import { RpcService } from './rpc.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +9,11 @@ import { WebsocketService } from './websocket.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  constructor(private websocket: WebsocketService) {}
+  constructor(
+    // private websocket: WebsocketService,
+    private rpc: RpcService,
+    private http: HttpClient
+  ) {}
 
   gameStarted = false;
   firstMove = true;
@@ -40,41 +46,57 @@ export class AppComponent implements OnInit {
 
   boards = [this.board1, this.board2, this.board3];
 
+  xmlRpcRequest = `<?xml version="1.0" encoding="UTF-8"?>
+      <methodCall>
+        <methodName>testRequest</methodName>
+      </methodCall>`;
+
   ngOnInit() {
-    this.websocket.waitForPlayers().subscribe((data) => {
-      if (data == 'Game Started!') {
-        this.gameStarted = true;
-        this.gameStatus = 'Both players have connected! Any player can begin!';
-      }
+    // this.rpc.fazerSolicitacaoXmlRpc(5, 3).subscribe((data: any) => {
+    //   console.log(data); 
+    // });
+
+    this.http.post('http://localhost:8000/RPC2', this.xmlRpcRequest, { responseType: 'text' }).subscribe((response:any) => {
+      console.log(response);
     });
 
-    this.websocket.moveListener().subscribe((move: any) => {
-      this.registerMoveOnBoard([move[0], move[1], move[2]]);
-    });
+    // this.rpc.testRequest().subscribe((data: any) => {
+    //   console.log(data);
+    // });
+    // this.websocket.waitForPlayers().subscribe((data) => {
+    //   if (data == 'Game Started!') {
+    //     this.gameStarted = true;
+    //     this.gameStatus = 'Both players have connected! Any player can begin!';
+    //   }
+    // });
 
-    this.websocket.turnListener().subscribe((data) => {
-      if (data) {
-        this.canPlay = true;
-        this.gameStatus = 'Your turn!';
-      }
-    });
+    // this.websocket.moveListener().subscribe((move: any) => {
+    //   this.registerMoveOnBoard([move[0], move[1], move[2]]);
+    // });
 
-    this.websocket.messageListener().subscribe((data: any) => {
-      this.messages.push(data);
-    });
+    // this.websocket.turnListener().subscribe((data) => {
+    //   if (data) {
+    //     this.canPlay = true;
+    //     this.gameStatus = 'Your turn!';
+    //   }
+    // });
 
-    this.websocket.giveUpListener().subscribe((data) => {
-      if (data == 'You gave up!') alert('You gave up!');
-      else alert('Your opponent gave up!');
-      this.resetBoard();
-    });
+    // this.websocket.messageListener().subscribe((data: any) => {
+    //   this.messages.push(data);
+    // });
+
+    // this.websocket.giveUpListener().subscribe((data) => {
+    //   if (data == 'You gave up!') alert('You gave up!');
+    //   else alert('Your opponent gave up!');
+    //   this.resetBoard();
+    // });
   }
 
   onClick(board: number, row: number, col: number) {
     if (this.canPlay == false) return;
 
     if (this.boards[board][row][col] === '') {
-      this.websocket.sendMove([board, row, col]);
+      // this.websocket.sendMove([board, row, col]);
       this.gameStatus = 'You have played, wait your turn!';
       this.canPlay = !this.canPlay;
     }
@@ -191,7 +213,7 @@ export class AppComponent implements OnInit {
   }
 
   giveUp() {
-    this.websocket.giveUp();
+    // this.websocket.giveUp();
   }
 
   changePlayerSymbol() {
@@ -201,7 +223,7 @@ export class AppComponent implements OnInit {
   }
 
   sendMessage() {
-    this.websocket.sendMessage(this.message);
+    // this.websocket.sendMessage(this.message);
     this.message = '';
   }
 }
