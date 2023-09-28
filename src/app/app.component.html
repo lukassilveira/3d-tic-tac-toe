@@ -1,5 +1,6 @@
 <div class="starting-screen" *ngIf="!gameStarted">
-  <span>Waiting for second player...</span>
+  <span>Waiting for second player... </span>
+  <!-- <span>{{ getGameStartStatus() }}</span> -->
 </div>
 <div class="main-container">
   <div class="board-container" *ngIf="gameStarted">
@@ -174,7 +175,8 @@
     </div>
     <div>
       <div class="game-status">
-        <span class="game-status-text">{{ gameStatus }}</span>
+        <span class="game-status-text">{{ playerId }}</span>
+        <!-- <span class="game-status-text">{{ gameStatus }}</span> -->
       </div>
     </div>
   </div>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { WebsocketService } from './websocket.service';
 import { RpcService } from './rpc.service';
 import { HttpClient } from '@angular/common/http';
+import { mergeMap, timer } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,8 @@ export class AppComponent implements OnInit {
   firstMove = true;
   canPlay = true;
   gameStatus = '';
+  playerId = '';
+  playerThatPlayed = '';
 
   message: string = '';
   messages: string[] = [];
@@ -46,33 +49,69 @@ export class AppComponent implements OnInit {
 
   boards = [this.board1, this.board2, this.board3];
 
-  xmlRpcRequest = `<?xml version="1.0" encoding="UTF-8"?>
-      <methodCall>
-        <methodName>testRequest</methodName>
-      </methodCall>`;
+  reloadInterval = 250;
 
   ngOnInit() {
-    // this.rpc.fazerSolicitacaoXmlRpc(5, 3).subscribe((data: any) => {
-    //   console.log(data); 
-    // });
-
-    this.http.post('http://localhost:8000/RPC2', this.xmlRpcRequest, { responseType: 'text' }).subscribe((response:any) => {
-      console.log(response);
+    // setando player id
+    this.rpc.connect().subscribe((data: string) => {
+      console.log(data.split('<string>'));
+      this.playerId = data.split('<string>')[1].split('</string>')[0];
+      console.log(this.playerId);
     });
 
-    // this.rpc.testRequest().subscribe((data: any) => {
-    //   console.log(data);
-    // });
+    // testando movimento
+    // timer(0, this.reloadInterval)
+    //   .pipe(mergeMap((_) => this.rpc.move(1, 2, 1, this.playerId)))
+    //   .subscribe((data: string) => {
+    //     console.log(data.split('<int>'));
+    //     this.registerMoveOnBoard([
+    //       parseInt(data.split('<int>')[1].charAt(0)),
+    //       parseInt(data.split('<int>')[2].charAt(0)),
+    //       parseInt(data.split('<int>')[3].charAt(0)),
+    //     ]);
+    //   });
+
+    // RPC OK!
     // this.websocket.waitForPlayers().subscribe((data) => {
     //   if (data == 'Game Started!') {
     //     this.gameStarted = true;
     //     this.gameStatus = 'Both players have connected! Any player can begin!';
     //   }
-    // });
+    //  });
+
+    // esperando segundo player
+    timer(0, this.reloadInterval)
+      .pipe(mergeMap((_) => this.rpc.gameStartStatus()))
+      .subscribe((data: any) => {
+        if (data.includes('Game Started!')) {
+          this.gameStarted = true;
+          if (this.firstMove) {
+            this.gameStatus =
+              'Both players have connected! Any player can begin!';
+          }
+        }
+      });
 
     // this.websocket.moveListener().subscribe((move: any) => {
     //   this.registerMoveOnBoard([move[0], move[1], move[2]]);
     // });
+
+    // registrando nova jogada
+    timer(0, this.reloadInterval)
+      .pipe(mergeMap((_) => this.rpc.getLastMove()))
+      .subscribe((data: string) => {
+        console.log(data);
+
+        if (data.includes('int')) {
+          this.registerMoveOnBoard([
+            parseInt(data.split('<int>')[1].charAt(0)),
+            parseInt(data.split('<int>')[2].charAt(0)),
+            parseInt(data.split('<int>')[3].charAt(0)),
+          ]);
+        } else {
+          this.resetBoard();
+        }
+      });
 
     // this.websocket.turnListener().subscribe((data) => {
     //   if (data) {
@@ -80,6 +119,13 @@ export class AppComponent implements OnInit {
     //     this.gameStatus = 'Your turn!';
     //   }
     // });
+
+    // gerenciador de turno
+    timer(0, this.reloadInterval)
+      .pipe(mergeMap((_) => this.rpc.turnListener()))
+      .subscribe((data: string) => {
+        this.playerThatPlayed = data.split("<string>")[1].split("</string>")[0];
+      });
 
     // this.websocket.messageListener().subscribe((data: any) => {
     //   this.messages.push(data);
@@ -93,12 +139,14 @@ export class AppComponent implements OnInit {
   }
 
   onClick(board: number, row: number, col: number) {
-    if (this.canPlay == false) return;
-
-    if (this.boards[board][row][col] === '') {
+    // if (this.canPlay == false) return;
+    console.log(this.playerThatPlayed);    
+    if (this.playerThatPlayed == this.playerId) return;
+    if (this.boards[board][row][col] === '') {      
       // this.websocket.sendMove([board, row, col]);
+      this.rpc.move(board, row, col, this.playerId).subscribe();
       this.gameStatus = 'You have played, wait your turn!';
-      this.canPlay = !this.canPlay;
+      // this.canPlay = !this.canPlay;
     }
   }
 
@@ -107,6 +155,7 @@ export class AppComponent implements OnInit {
       this.boards[move[0]][move[1]][move[2]] = this.playerSymbol;
       this.isBoardFull();
       if (this.checkWinner(this.playerSymbol)) {
+        this.rpc.resetGame().subscribe();
         alert('Player ' + this.playerSymbol + ' wins!');
         this.resetBoard();
       } else {
@@ -207,7 +256,8 @@ export class AppComponent implements OnInit {
       }
     }
     this.playerSymbol = 'X';
-    this.canPlay = true;
+    // this.canPlay = true;
+    this.playerThatPlayed = '';
     this.moveCounter = 0;
     this.gameStatus = 'The game restarted! Any player can begin!';
   }
