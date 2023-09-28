@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WebsocketService } from './websocket.service';
 import { RpcService } from './rpc.service';
-import { HttpClient } from '@angular/common/http';
 import { mergeMap, timer } from 'rxjs';
 
 @Component({
@@ -12,8 +11,7 @@ import { mergeMap, timer } from 'rxjs';
 export class AppComponent implements OnInit {
   constructor(
     // private websocket: WebsocketService,
-    private rpc: RpcService,
-    private http: HttpClient
+    private rpc: RpcService
   ) {}
 
   gameStarted = false;
@@ -49,7 +47,7 @@ export class AppComponent implements OnInit {
 
   boards = [this.board1, this.board2, this.board3];
 
-  reloadInterval = 250;
+  reloadInterval = 500;
 
   ngOnInit() {
     // setando player id
@@ -58,18 +56,6 @@ export class AppComponent implements OnInit {
       this.playerId = data.split('<string>')[1].split('</string>')[0];
       console.log(this.playerId);
     });
-
-    // testando movimento
-    // timer(0, this.reloadInterval)
-    //   .pipe(mergeMap((_) => this.rpc.move(1, 2, 1, this.playerId)))
-    //   .subscribe((data: string) => {
-    //     console.log(data.split('<int>'));
-    //     this.registerMoveOnBoard([
-    //       parseInt(data.split('<int>')[1].charAt(0)),
-    //       parseInt(data.split('<int>')[2].charAt(0)),
-    //       parseInt(data.split('<int>')[3].charAt(0)),
-    //     ]);
-    //   });
 
     // RPC OK!
     // this.websocket.waitForPlayers().subscribe((data) => {
@@ -100,8 +86,6 @@ export class AppComponent implements OnInit {
     timer(0, this.reloadInterval)
       .pipe(mergeMap((_) => this.rpc.getLastMove()))
       .subscribe((data: string) => {
-        console.log(data);
-
         if (data.includes('int')) {
           this.registerMoveOnBoard([
             parseInt(data.split('<int>')[1].charAt(0)),
@@ -120,16 +104,29 @@ export class AppComponent implements OnInit {
     //   }
     // });
 
-    // gerenciador de turno
+    // gerenciador de desistencia
     timer(0, this.reloadInterval)
-      .pipe(mergeMap((_) => this.rpc.turnListener()))
+      .pipe(mergeMap((_) => this.rpc.giveUpListener()))
       .subscribe((data: string) => {
-        this.playerThatPlayed = data.split("<string>")[1].split("</string>")[0];
+        console.log(data);
+
+        if (data.includes('Player 1 gave up!')) {
+          alert('Player 1 gave up!');
+        } else if (data.includes('Player 2 gave up!')) {
+          alert('Player 2 gave up!');
+        }
       });
 
     // this.websocket.messageListener().subscribe((data: any) => {
     //   this.messages.push(data);
     // });
+
+    // gerenciador de turno
+    timer(0, this.reloadInterval)
+      .pipe(mergeMap((_) => this.rpc.turnListener()))
+      .subscribe((data: string) => {
+        this.playerThatPlayed = data.split('<string>')[1].split('</string>')[0];
+      });
 
     // this.websocket.giveUpListener().subscribe((data) => {
     //   if (data == 'You gave up!') alert('You gave up!');
@@ -140,9 +137,8 @@ export class AppComponent implements OnInit {
 
   onClick(board: number, row: number, col: number) {
     // if (this.canPlay == false) return;
-    console.log(this.playerThatPlayed);    
     if (this.playerThatPlayed == this.playerId) return;
-    if (this.boards[board][row][col] === '') {      
+    if (this.boards[board][row][col] === '') {
       // this.websocket.sendMove([board, row, col]);
       this.rpc.move(board, row, col, this.playerId).subscribe();
       this.gameStatus = 'You have played, wait your turn!';
@@ -264,6 +260,9 @@ export class AppComponent implements OnInit {
 
   giveUp() {
     // this.websocket.giveUp();
+    this.rpc.giveUp(this.playerId).subscribe(() => {
+      this.rpc.resetGame().subscribe();
+    });
   }
 
   changePlayerSymbol() {

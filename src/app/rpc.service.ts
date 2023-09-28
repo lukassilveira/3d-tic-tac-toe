@@ -10,47 +10,6 @@ export class RpcService {
 
   url = 'http://localhost:8000/RPC2';
 
-  fazerSolicitacaoXmlRpc(param1: number, param2: number): Observable<any> {
-    const xmlRpcRequest = `<?xml version="1.0" encoding="UTF-8"?>
-      <methodCall>
-        <methodName>multiplicar</methodName>
-        <params>
-          <param>
-            <value><int>${param1}</int></value>
-          </param>
-          <param>
-            <value><int>${param2}</int></value>
-          </param>
-        </params>
-      </methodCall>`;
-
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'text/xml',
-      }),
-      reponseType: 'text/plain',
-    };
-
-    return this.http.post<string>(this.url, xmlRpcRequest, httpOptions);
-  }
-
-  testRequest(): Observable<any> {
-    const xmlRpcRequest = `<?xml version="1.0" encoding="UTF-8"?>
-      <methodCall>
-        <methodName>testRequest</methodName>
-      </methodCall>`;
-
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'text/xml',
-      }),
-    };
-
-    return this.http.post(this.url, xmlRpcRequest, {
-      responseType: 'text',
-    });
-  }
-
   connect(): Observable<any> {
     const xmlRpcRequest = `<?xml version="1.0" encoding="UTF-8"?>
       <methodCall>
@@ -133,6 +92,45 @@ export class RpcService {
           <param>
             <value><int>${z}</int></value>
           </param>
+          <param>
+            <value><string>${playerId}</string></value>
+          </param>
+        </params>
+      </methodCall>`;
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'text/xml',
+      }),
+    };
+
+    return this.http.post(this.url, xmlRpcRequest, {
+      responseType: 'text',
+    });
+  }
+
+  giveUpListener(): Observable<any> {
+    const xmlRpcRequest = `<?xml version="1.0" encoding="UTF-8"?>
+      <methodCall>
+        <methodName>giveup_listener</methodName>
+      </methodCall>`;
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'text/xml',
+      }),
+    };
+
+    return this.http.post(this.url, xmlRpcRequest, {
+      responseType: 'text',
+    });
+  }
+
+  giveUp(playerId: string): Observable<any> {
+    const xmlRpcRequest = `<?xml version="1.0" encoding="UTF-8"?>
+      <methodCall>
+        <methodName>giveup</methodName>
+        <params>
           <param>
             <value><string>${playerId}</string></value>
           </param>
