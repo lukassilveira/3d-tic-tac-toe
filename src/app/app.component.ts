@@ -52,9 +52,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     // setando player id
     this.rpc.connect().subscribe((data: string) => {
-      console.log(data.split('<string>'));
       this.playerId = data.split('<string>')[1].split('</string>')[0];
-      console.log(this.playerId);
     });
 
     // RPC OK!
@@ -108,13 +106,25 @@ export class AppComponent implements OnInit {
     timer(0, this.reloadInterval)
       .pipe(mergeMap((_) => this.rpc.giveUpListener()))
       .subscribe((data: string) => {
-        console.log(data);
-
         if (data.includes('Player 1 gave up!')) {
           alert('Player 1 gave up!');
         } else if (data.includes('Player 2 gave up!')) {
           alert('Player 2 gave up!');
         }
+      });
+
+    timer(0, this.reloadInterval)
+      .pipe(mergeMap((_) => this.rpc.getMessages()))
+      .subscribe((data: string) => {
+        var messages = data.split("<string>")
+        var messageArray = []
+        for (let index = 1; index < messages.length; index++) {
+          const element = messages[index].split("</string>")[0];
+          messageArray.push(element);
+        }
+        if (messageArray === messages) return;
+        console.log(messageArray);
+        this.messages = messageArray;
       });
 
     // this.websocket.messageListener().subscribe((data: any) => {
@@ -262,6 +272,7 @@ export class AppComponent implements OnInit {
     // this.websocket.giveUp();
     this.rpc.giveUp(this.playerId).subscribe(() => {
       this.rpc.resetGame().subscribe();
+      this.rpc.sendMessage(`${this.playerId} gave up!`).subscribe();
     });
   }
 
@@ -272,7 +283,8 @@ export class AppComponent implements OnInit {
   }
 
   sendMessage() {
-    // this.websocket.sendMessage(this.message);
+    // this.websocket.sendMessage(this.message);    
+    this.rpc.sendMessage(`${this.playerId}: ` + this.message).subscribe();
     this.message = '';
   }
 }

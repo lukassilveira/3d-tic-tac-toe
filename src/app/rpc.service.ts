@@ -164,4 +164,43 @@ export class RpcService {
       responseType: 'text',
     });
   }
+
+  sendMessage(message: string): Observable<any> {
+    const xmlRpcRequest = `<?xml version="1.0" encoding="UTF-8"?>
+      <methodCall>
+        <methodName>send_message</methodName>
+        <params>
+          <param>
+            <value><string>${message}</string></value>
+          </param>
+        </params>
+      </methodCall>`;
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'text/xml',
+      }),
+    };
+
+    return this.http.post(this.url, xmlRpcRequest, {
+      responseType: 'text',
+    });
+  }
+
+  getMessages(): Observable<any> {
+    const xmlRpcRequest = `<?xml version="1.0" encoding="UTF-8"?>
+      <methodCall>
+        <methodName>get_messages</methodName>
+      </methodCall>`;
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'text/xml',
+      }),
+    };
+
+    return this.http.post(this.url, xmlRpcRequest, {
+      responseType: 'text',
+    });
+  }
 }
