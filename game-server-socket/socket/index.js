@@ -1,18 +1,51 @@
 module.exports = (io) => {
-  let player1;
-  let player2;
+  let users = [];
   io.on("connection", (socket) => {
-    if (!player1) {
-      console.log("Player 1 connected");
-      player1 = socket;
-    } else if (!player2) {
-      console.log("Player 2 connected");
-      player2 = socket;
-    }
+    socket.on("register", (userData) => {
+      users.push({
+        name: userData.name,
+        status: userData.status,
+        friends: [],
+        messages: userData.messages,
+      });
+      console.log(users);
+    });
 
-    if (player1 && player2) {
-      io.emit("gameStarting", "Game Started!");
-    }
+    socket.on("login", (userName) => {
+      let user = users.find((u) => {
+        return u.name == userName;
+      });
+      if (user) {
+        user.status = "online";
+      }
+      console.log(users);
+    });
+
+    socket.on("addFriend", (friend1, friend2) => {
+      let _user1 = users.find((u) => {
+        return u.name == friend1;
+      });
+      let _user2 = users.find((u) => {
+        return u.name == friend2;
+      });
+
+      if (_user1 && _user2) {
+        _user1.friends.push(friend2);
+        _user2.friends.push(friend1);
+      }
+
+      console.log(users);
+    });
+
+    socket.on("retrieveFriends", () => {
+      io.emit("retrieveFriendsListener", users);
+      socket.broadcast.emit("retrieveFriendsListener", users);
+    });
+
+    socket.on("sendMessage", (message) => {
+      io.emit("moveListener", message);
+      socket.broadcast.emit("turnListener", "playAllowed");
+    });
 
     socket.on("moveMessage", (message) => {
       io.emit("moveListener", message);
